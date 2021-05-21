@@ -8,5 +8,4 @@ import java.util.*
 interface ChavePixRepository: JpaRepository<ChavePix, UUID> {
 
     fun existsByValor(valor: String): Boolean
-
 }

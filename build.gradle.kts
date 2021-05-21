@@ -31,28 +31,36 @@ micronaut {
 }
 
 dependencies {
+    kapt("io.micronaut.data:micronaut-data-processor")
     implementation("io.micronaut:micronaut-runtime")
+    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
     implementation("io.micronaut.grpc:micronaut-grpc-runtime")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
+    implementation("io.micronaut.sql:micronaut-hibernate-jpa")
+    implementation("io.micronaut.sql:micronaut-jdbc-hikari")
+    implementation("io.micronaut.sql:micronaut-vertx-mysql-client")
+    implementation("io.micronaut.xml:micronaut-jackson-xml")
+    implementation("io.micronaut:micronaut-http-client")
     implementation("javax.annotation:javax.annotation-api")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     runtimeOnly("ch.qos.logback:logback-classic")
+    runtimeOnly("mysql:mysql-connector-java")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
-    testImplementation("io.micronaut:micronaut-http-client")
-    //JPA
-    runtime("io.micronaut.sql:micronaut-jdbc-hikari")
-    implementation("mysql:mysql-connector-java:8.0.23")
-    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
-    //HTTP-Client
-    implementation("io.micronaut:micronaut-http-client:2.5.3")
-    //Hibernate-validator
+
+
     implementation("io.micronaut:micronaut-validation")
-    implementation("org.hibernate.validator:hibernate-validator:7.0.1.Final")
+    testImplementation("io.micronaut:micronaut-http-client")
 
+    runtimeOnly("com.h2database:h2")
+    testAnnotationProcessor("io.micronaut:micronaut-inject-java")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("io.micronaut.test:micronaut-test-junit5:2.3.3")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
+    testImplementation("org.mockito:mockito-core")
 
-
-
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.7.2")
 }
 
 

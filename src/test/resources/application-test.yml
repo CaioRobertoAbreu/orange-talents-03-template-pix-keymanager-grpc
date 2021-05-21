@@ -1,0 +1,32 @@
+micronaut:
+  application:
+    name: keyManager
+    server:
+      access-logger:
+        enabled: true # Enables the access logger
+        logger-name: my-access-logger # A logger name, optional, default is `HTTP_ACCESS_LOGGER`
+        log-format: common # A log format, optional, default is Common Log Format
+
+datasources:
+  default:
+    url: jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password: ''
+    schema-generate: CREATE_DROP
+    dialect: H2
+
+jpa:
+  default:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+        show_sql: true
+        format_sql: true
+
+
+#Habilita log do contexto transacional
+logger:
+  levels:
+    io.micronaut.transaction: DEBUG

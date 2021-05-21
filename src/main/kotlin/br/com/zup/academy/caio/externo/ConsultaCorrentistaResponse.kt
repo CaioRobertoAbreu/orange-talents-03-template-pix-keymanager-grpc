@@ -1,7 +1,8 @@
 package br.com.zup.academy.caio.externo
 
-import br.com.zup.academy.caio.CadastraChaveRequest
+import br.com.zup.academy.caio.TipoConta
 import br.com.zup.academy.caio.chavepix.ChavePix
+import br.com.zup.academy.caio.chavepix.NovaChavePix
 
 data class ConsultaCorrentistaResponse(
     val tipo: String,
@@ -14,9 +15,9 @@ data class ConsultaCorrentistaResponse(
     val cpf = titular.cpf
 
 
-    fun toChavePix(request: CadastraChaveRequest): ChavePix{
-        return ChavePix(request.tipoChave, request.valor, this.tipo, this.agencia,
-            this.numero, this.nome, this.cpf, this.titular_id)
+    fun toChavePix(novaChavePix: NovaChavePix): ChavePix{
+        return ChavePix(novaChavePix.tipoChave!!, novaChavePix.valor, TipoConta.valueOf(this.tipo),
+            this.agencia, this.numero, this.nome, this.cpf, this.titular_id)
     }
 }
 data class Titular(

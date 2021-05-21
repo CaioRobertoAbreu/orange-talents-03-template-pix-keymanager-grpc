@@ -1,6 +1,7 @@
 package br.com.zup.academy.caio.endpoint
 
 import br.com.zup.academy.caio.KeyManagerServiceGrpc
+import br.com.zup.academy.caio.TipoChave
 import br.com.zup.academy.caio.TipoConta
 import br.com.zup.academy.caio.chavepix.ChavePixRepository
 import br.com.zup.academy.caio.externo.ConsultaCorrentistaClient
@@ -29,7 +30,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @MicronautTest(transactional = false)
-class CriaChaveEndpointTest(
+class CriaChaveControllerTest(
     @Inject val client: KeyManagerServiceGrpc.KeyManagerServiceBlockingStub,
     val repository: ChavePixRepository){
 
@@ -44,7 +45,7 @@ class CriaChaveEndpointTest(
     @Test
     fun `deve cadastrar uma nova chave pix`() {
         //Cenario
-        val request = CriaRequestBuilder().now()
+        val request = CriaRequestBuilder().comValoresPadrao().now()
 
         val response = ConsultaCorrentistaResponse(
             tipo = "CONTA_POUPANCA", agencia = "0001", numero ="291900",
@@ -66,7 +67,9 @@ class CriaChaveEndpointTest(
     @Test
     fun `deve retornar exceção para tipo de conta incorreta quando retornar null`() {
         //Cenario
-        val request = CriaRequestBuilder().alterarConta(TipoConta.CONTA_POUPANCA_VALUE).now()
+        val request = CriaRequestBuilder()
+            .comValoresPadrao()
+            .alterarConta(TipoConta.CONTA_POUPANCA_VALUE).now()
 
         //Acao
         `when`(externo.consultaCliente(request.codigoInterno, request.tipoConta.toString()))
@@ -86,7 +89,9 @@ class CriaChaveEndpointTest(
     @Test
     fun `deve retornar exceção para tipo de conta incorreta quando retornar HttpClientResponseException`() {
         //Cenario
-        val request = CriaRequestBuilder().alterarConta(TipoConta.CONTA_POUPANCA_VALUE).now()
+        val request = CriaRequestBuilder()
+            .comValoresPadrao()
+            .alterarConta(TipoConta.CONTA_POUPANCA_VALUE).now()
 
         //Acao
         `when`(externo.consultaCliente(request.codigoInterno, request.tipoConta.toString()))
@@ -106,7 +111,9 @@ class CriaChaveEndpointTest(
     @Test
     fun `deve retornar excecao para campos obrigatorios que sao enviados vazio`() {
         //Cenario
-        val request = CriaRequestBuilder().comCamposObrigatoriosInvalidos().now()
+        val request = CriaRequestBuilder()
+            .comCamposObrigatoriosInvalidos()
+            .now()
 
         //Acao
         val error = org.junit.jupiter.api.assertThrows<StatusRuntimeException> {
@@ -125,7 +132,7 @@ class CriaChaveEndpointTest(
                     Pair(violacao.field, violacao.description)
                 }
 
-            assertTrue(details.contains(Pair("request", "Valor da chave inválido")))
+            assertTrue(details.contains(Pair("novaChavePix", "Valor da chave inválido")))
             assertTrue(details.contains(Pair("codigoInterno", "must not be blank")))
         }
     }
@@ -193,7 +200,10 @@ class CriaChaveEndpointTest(
     @Test
     fun `deve retornar excecao com chave tipo aleatoria incorreta`(){
         //Cenario
-        val request = CriaRequestBuilder().now()
+        val request = CriaRequestBuilder()
+            .comValoresPadrao()
+            .comTipoDeChave(TipoChave.CHAVE_ALEATORIA_VALUE)
+            .now()
 
         //Acao
         val error = assertThrows<StatusRuntimeException> {
@@ -203,14 +213,16 @@ class CriaChaveEndpointTest(
         //Verificacao
         with(error){
             assertEquals(Status.INVALID_ARGUMENT.code, this.status.code)
-            assertEquals("Dados inválidos", this.status.description)
+            assertEquals("Parâmetros inválidos", this.status.description)
         }
     }
 
     @Test
     fun `deve retornar excecao para chave duplicada`(){
         //Cenario
-        val request = CriaRequestBuilder().now()
+        val request = CriaRequestBuilder()
+            .comValoresPadrao()
+            .now()
 
         val response = ConsultaCorrentistaResponse(
             tipo = "CONTA_POUPANCA", agencia = "0001", numero ="291900",

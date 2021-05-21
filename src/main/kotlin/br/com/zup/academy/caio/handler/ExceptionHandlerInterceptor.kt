@@ -1,6 +1,6 @@
 package br.com.zup.academy.caio.handler
 
-import br.com.zup.academy.caio.endpoint.CriaChaveEndpoint
+import br.com.zup.academy.caio.chavepix.CriaChaveController
 import br.com.zup.academy.caio.exceptions.ChavePixAlreadyExists
 import com.google.rpc.BadRequest
 import com.google.rpc.Code
@@ -20,11 +20,11 @@ import javax.validation.ConstraintViolationException
 
 @Singleton
 @InterceptorBean(ErrorHandler::class)
-class ExceptionHandlerInterceptor: MethodInterceptor<CriaChaveEndpoint, Any?> {
+class ExceptionHandlerInterceptor: MethodInterceptor<CriaChaveController, Any?> {
 
     private val LOGGER = LoggerFactory.getLogger(this::class.java)
 
-    override fun intercept(context: MethodInvocationContext<CriaChaveEndpoint, Any?>): Any? {
+    override fun intercept(context: MethodInvocationContext<CriaChaveController, Any?>): Any? {
 
         LOGGER.info("Interceptando metodo ${context.targetMethod}")
 

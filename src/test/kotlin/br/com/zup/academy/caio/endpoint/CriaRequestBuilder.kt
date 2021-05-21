@@ -6,11 +6,18 @@ import br.com.zup.academy.caio.TipoConta
 
 class CriaRequestBuilder {
 
-    private var codigoInterno: String = "5260263c-a3c1-4727-ae32-3bdb2538841b"
-    private var tipoChave: Int = TipoChave.CPF_VALUE
-    private var valor: String = "12345678910"
-    private var tipoConta: Int = TipoConta.CONTA_CORRENTE_VALUE
+    private var codigoInterno: String = ""
+    private var tipoChave: Int = 0
+    private var valor: String = ""
+    private var tipoConta: Int = 0
 
+    fun comValoresPadrao(): CriaRequestBuilder {
+        this.codigoInterno = "5260263c-a3c1-4727-ae32-3bdb2538841b"
+        this.tipoChave = TipoChave.CPF_VALUE
+        this.valor = "12345678910"
+        this.tipoConta = TipoConta.CONTA_CORRENTE_VALUE
+        return this
+    }
 
     fun now(): CadastraChaveRequest{
         return CadastraChaveRequest.newBuilder()

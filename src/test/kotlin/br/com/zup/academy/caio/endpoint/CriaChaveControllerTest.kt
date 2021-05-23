@@ -1,6 +1,6 @@
 package br.com.zup.academy.caio.endpoint
 
-import br.com.zup.academy.caio.KeyManagerServiceGrpc
+import br.com.zup.academy.caio.CriaChaveServiceGrpc
 import br.com.zup.academy.caio.TipoChave
 import br.com.zup.academy.caio.TipoConta
 import br.com.zup.academy.caio.chavepix.ChavePixRepository
@@ -31,7 +31,7 @@ import javax.inject.Singleton
 
 @MicronautTest(transactional = false)
 class CriaChaveControllerTest(
-    @Inject val client: KeyManagerServiceGrpc.KeyManagerServiceBlockingStub,
+    @Inject val client: CriaChaveServiceGrpc.CriaChaveServiceBlockingStub,
     val repository: ChavePixRepository){
 
     @Inject
@@ -256,9 +256,9 @@ class CriaChaveControllerTest(
 class client{
 
     @Singleton
-    fun blockingStup(@GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel): KeyManagerServiceGrpc.KeyManagerServiceBlockingStub? {
+    fun blockingStup(@GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel): CriaChaveServiceGrpc.CriaChaveServiceBlockingStub? {
 
-        return KeyManagerServiceGrpc.newBlockingStub(channel)
+        return CriaChaveServiceGrpc.newBlockingStub(channel)
     }
 }
 

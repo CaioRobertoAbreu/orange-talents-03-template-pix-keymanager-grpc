@@ -2,6 +2,7 @@ package br.com.zup.academy.caio.handler
 
 import br.com.zup.academy.caio.chavepix.CriaChaveController
 import br.com.zup.academy.caio.exceptions.ChavePixAlreadyExists
+import br.com.zup.academy.caio.exceptions.ChavePixNotFound
 import com.google.rpc.BadRequest
 import com.google.rpc.Code
 import io.grpc.Status
@@ -38,6 +39,7 @@ class ExceptionHandlerInterceptor: MethodInterceptor<CriaChaveController, Any?> 
                 is IllegalStateException -> Status.FAILED_PRECONDITION.withDescription(e.message).asRuntimeException()
                 is ChavePixAlreadyExists -> Status.ALREADY_EXISTS.withDescription(e.message).asRuntimeException()
                 is ConstraintViolationException -> constraintViolationException(e)
+                is ChavePixNotFound -> Status.NOT_FOUND.withDescription(e.message).asRuntimeException()
                 else -> Status.UNKNOWN.withDescription("Erro inesperado").asRuntimeException()
             }
 

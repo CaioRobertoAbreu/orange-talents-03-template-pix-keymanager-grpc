@@ -20,7 +20,7 @@ class ChavePix(
     val numero: String,
     val nome: String,
     val cpf: String,
-    val id_cliente: String,
+    val clienteId: String,
 ) {
     @Id
     var pixId: String? = null

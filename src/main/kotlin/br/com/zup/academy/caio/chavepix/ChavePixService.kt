@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import javax.transaction.Transactional
 import javax.validation.Valid
 
 @Validated
@@ -23,6 +24,7 @@ class ChavePixService() {
     private val LOGGER = LoggerFactory.getLogger(this::class.java)
 
 
+    @Transactional
     fun registra(@Valid novaChavePix: NovaChavePix): ChavePix {
 
         if (chavePixRepository.existsByValor(novaChavePix.valor)) {
@@ -34,19 +36,17 @@ class ChavePixService() {
         return chavePixRepository.save(chavePix)
     }
 
+    @Transactional
     fun excluirChave(@Valid chave: ExcluirChave) {
 
         with(chave) {
-            val chaveEncontrada = chavePixRepository.findById(chave.pixId)
-            if (chaveEncontrada.isEmpty){
-                throw ChavePixNotFound("Chave não encontrada")
+
+            if(chavePixRepository.existsByPixIdAndClienteId(chave.pixId, chave.clienteId)){
+                chavePixRepository.deleteById(this.pixId)
+            }else {
+                throw ChavePixNotFound("Chave não encontrada ou não pertencente ao cliente")
             }
 
-            if(chaveEncontrada.get().id_cliente != this.clienteId){
-                throw Status.PERMISSION_DENIED.asRuntimeException()
-            }
-
-            chavePixRepository.deleteById(this.pixId)
         }
     }
 }

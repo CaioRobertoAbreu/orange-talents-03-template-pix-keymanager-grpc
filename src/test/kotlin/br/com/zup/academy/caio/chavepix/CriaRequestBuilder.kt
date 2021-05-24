@@ -1,4 +1,4 @@
-package br.com.zup.academy.caio.endpoint
+package br.com.zup.academy.caio.chavepix
 
 import br.com.zup.academy.caio.CadastraChaveRequest
 import br.com.zup.academy.caio.TipoChave

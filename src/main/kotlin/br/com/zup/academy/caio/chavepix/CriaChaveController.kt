@@ -22,7 +22,7 @@ class CriaChaveController(
 
         val response = with(chavePix){
             CadastraChaveResponse.newBuilder()
-                .setClienteId(this.id_cliente)
+                .setClienteId(this.clienteId)
                 .setPixId(this.pixId.toString())
                 .build()
         }

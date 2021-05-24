@@ -1,9 +1,10 @@
-package br.com.zup.academy.caio.endpoint
+package br.com.zup.academy.caio.chavepix
 
 import br.com.zup.academy.caio.CriaChaveServiceGrpc
 import br.com.zup.academy.caio.TipoChave
 import br.com.zup.academy.caio.TipoConta
 import br.com.zup.academy.caio.chavepix.ChavePixRepository
+import br.com.zup.academy.caio.chavepix.CriaRequestBuilder
 import br.com.zup.academy.caio.externo.ConsultaCorrentistaClient
 import br.com.zup.academy.caio.externo.ConsultaCorrentistaResponse
 import br.com.zup.academy.caio.externo.Titular
@@ -253,7 +254,7 @@ class CriaChaveControllerTest(
 
 
 @Factory
-class client{
+class criaChaveClient{
 
     @Singleton
     fun blockingStup(@GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel): CriaChaveServiceGrpc.CriaChaveServiceBlockingStub? {

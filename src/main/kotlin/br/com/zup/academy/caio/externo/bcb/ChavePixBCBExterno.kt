@@ -1,5 +1,9 @@
 package br.com.zup.academy.caio.externo.bcb
 
+import br.com.zup.academy.caio.externo.bcb.cria.CreatePixKeyRequest
+import br.com.zup.academy.caio.externo.bcb.cria.CreatePixKeyResponse
+import br.com.zup.academy.caio.externo.bcb.delete.DeletePixKeyRequest
+import br.com.zup.academy.caio.externo.bcb.delete.DeletePixKeyResponse
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.*
@@ -11,7 +15,7 @@ interface ChavePixBCBExterno {
     @Post
     @Produces(MediaType.APPLICATION_XML)
     @Consumes(MediaType.APPLICATION_XML)
-    fun criarChave(@Body chaveCreatePixKey: CreatePixKeyRequest ): HttpResponse<ResponseCriaChaveBCB>
+    fun criarChave(@Body chaveCreatePixKey: CreatePixKeyRequest): HttpResponse<CreatePixKeyResponse>
 
     @Delete("/{key}")
     @Produces(MediaType.APPLICATION_XML)

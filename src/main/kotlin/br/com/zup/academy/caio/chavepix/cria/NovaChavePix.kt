@@ -1,9 +1,9 @@
-package br.com.zup.academy.caio.chavepix
+package br.com.zup.academy.caio.chavepix.cria
 
 import br.com.zup.academy.caio.CadastraChaveRequest
 import br.com.zup.academy.caio.TipoChave
 import br.com.zup.academy.caio.TipoConta
-import br.com.zup.academy.caio.externo.bcb.ResponseCriaChaveBCB
+import br.com.zup.academy.caio.externo.bcb.cria.CreatePixKeyResponse
 import br.com.zup.academy.caio.externo.erp_itau.ConsultaCorrentistaResponse
 import br.com.zup.academy.caio.validacao_customizada.ChavePix
 import io.micronaut.core.annotation.Introspected
@@ -24,8 +24,8 @@ data class NovaChavePix(
     val tipoConta: TipoConta?
 ) {
 
-    fun toChavePix(responseBCB: ResponseCriaChaveBCB, cliente: ConsultaCorrentistaResponse): br.com.zup.academy.caio.chavepix.ChavePix {
-        return ChavePix(this.tipoChave!!, responseBCB.key, TipoConta.valueOf(cliente.tipo),
+    fun toChavePix(createPixKeyResponseBCB: CreatePixKeyResponse, cliente: ConsultaCorrentistaResponse): br.com.zup.academy.caio.chavepix.cria.ChavePix {
+        return ChavePix(this.tipoChave!!, createPixKeyResponseBCB.key, TipoConta.valueOf(cliente.tipo),
             cliente.agencia, cliente.numero, cliente.nome, cliente.cpf, cliente.titular_id)
     }
 }

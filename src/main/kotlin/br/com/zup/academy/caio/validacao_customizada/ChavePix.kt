@@ -1,7 +1,7 @@
 package br.com.zup.academy.caio.validacao_customizada
 
 import br.com.zup.academy.caio.TipoChave
-import br.com.zup.academy.caio.chavepix.NovaChavePix
+import br.com.zup.academy.caio.chavepix.cria.NovaChavePix
 import io.micronaut.core.annotation.AnnotationValue
 import io.micronaut.validation.validator.constraints.ConstraintValidator
 import io.micronaut.validation.validator.constraints.ConstraintValidatorContext

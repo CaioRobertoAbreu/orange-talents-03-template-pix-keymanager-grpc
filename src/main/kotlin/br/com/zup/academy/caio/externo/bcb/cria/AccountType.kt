@@ -1,4 +1,4 @@
-package br.com.zup.academy.caio.externo.bcb
+package br.com.zup.academy.caio.externo.bcb.cria
 
 import br.com.zup.academy.caio.TipoConta
 

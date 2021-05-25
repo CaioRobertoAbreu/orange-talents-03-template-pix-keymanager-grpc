@@ -1,4 +1,4 @@
-package br.com.zup.academy.caio.chavepix
+package br.com.zup.academy.caio.chavepix.deleta
 
 import br.com.zup.academy.caio.ExcluiChaveServiceGrpc
 import br.com.zup.academy.caio.ExclusaoChaveRequest

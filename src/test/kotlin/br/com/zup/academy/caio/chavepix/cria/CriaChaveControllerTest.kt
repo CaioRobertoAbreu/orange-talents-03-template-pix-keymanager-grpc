@@ -1,10 +1,12 @@
-package br.com.zup.academy.caio.chavepix
+package br.com.zup.academy.caio.chavepix.cria
 
 import br.com.zup.academy.caio.CriaChaveServiceGrpc
 import br.com.zup.academy.caio.TipoChave
 import br.com.zup.academy.caio.TipoConta
+import br.com.zup.academy.caio.chavepix.ChavePixRepository
 import br.com.zup.academy.caio.externo.bcb.*
-import br.com.zup.academy.caio.externo.erp_itau.ConsultaCorrentistaClient
+import br.com.zup.academy.caio.externo.bcb.cria.*
+import br.com.zup.academy.caio.externo.erp_itau.ConsultaCorrentistaExterno
 import br.com.zup.academy.caio.externo.erp_itau.ConsultaCorrentistaResponse
 import br.com.zup.academy.caio.externo.erp_itau.Titular
 import com.google.rpc.BadRequest
@@ -16,7 +18,6 @@ import io.micronaut.context.annotation.Factory
 import io.micronaut.grpc.annotation.GrpcChannel
 import io.micronaut.grpc.server.GrpcServerChannel
 import io.micronaut.http.HttpResponse
-import io.micronaut.http.HttpResponseFactory
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.test.annotation.MockBean
@@ -28,7 +29,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
-import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -36,10 +36,11 @@ import javax.inject.Singleton
 @MicronautTest(transactional = false)
 class CriaChaveControllerTest(
     @Inject val client: CriaChaveServiceGrpc.CriaChaveServiceBlockingStub,
-    val repository: ChavePixRepository){
+    val repository: ChavePixRepository
+){
 
     @Inject
-    lateinit var externoItau: ConsultaCorrentistaClient
+    lateinit var externoItau: ConsultaCorrentistaExterno
     @Inject
     lateinit var externoBCB: ChavePixBCBExterno
 
@@ -63,9 +64,10 @@ class CriaChaveControllerTest(
 
         val pixKeyReqeust = CreatePixKeyRequest(request.tipoChave.name, request.valor,
         BankAccount("60701190", response.agencia, response.numero, AccountType.converte(response.tipo)),
-        Owner(OwnerType.NATURAL_PERSON.name, response.nome, response.cpf))
+        Owner(OwnerType.NATURAL_PERSON.name, response.nome, response.cpf)
+        )
 
-        val responseCriaChaveBCB = ResponseCriaChaveBCB(request.tipoChave.name, request.valor,
+        val responseCriaChaveBCB = CreatePixKeyResponse(request.tipoChave.name, request.valor,
         pixKeyReqeust.bankAccount, pixKeyReqeust.owner, LocalDateTime.now())
 
         `when`(externoBCB.criarChave(pixKeyReqeust))
@@ -254,7 +256,7 @@ class CriaChaveControllerTest(
             Owner(OwnerType.NATURAL_PERSON.name, response.nome, response.cpf)
         )
 
-        val responseCriaChaveBCB = ResponseCriaChaveBCB(request.tipoChave.name, request.valor,
+        val responseCriaChaveBCB = CreatePixKeyResponse(request.tipoChave.name, request.valor,
         createPixRequest.bankAccount, createPixRequest.owner, LocalDateTime.now())
 
         `when`(externoBCB.criarChave(createPixRequest))
@@ -307,9 +309,9 @@ class CriaChaveControllerTest(
         }
     }
 
-    @MockBean(ConsultaCorrentistaClient::class)
-    fun mockConsultaClientExternoItau(): ConsultaCorrentistaClient? {
-        return Mockito.mock(ConsultaCorrentistaClient::class.java)
+    @MockBean(ConsultaCorrentistaExterno::class)
+    fun mockConsultaClientExternoItau(): ConsultaCorrentistaExterno? {
+        return Mockito.mock(ConsultaCorrentistaExterno::class.java)
     }
 
     @MockBean(ChavePixBCBExterno::class)

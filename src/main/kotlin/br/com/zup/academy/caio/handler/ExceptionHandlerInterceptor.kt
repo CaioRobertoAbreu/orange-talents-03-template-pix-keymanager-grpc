@@ -1,6 +1,6 @@
 package br.com.zup.academy.caio.handler
 
-import br.com.zup.academy.caio.chavepix.CriaChaveController
+import br.com.zup.academy.caio.chavepix.cria.CriaChaveController
 import br.com.zup.academy.caio.exceptions.ChavePixAlreadyExists
 import br.com.zup.academy.caio.exceptions.ChavePixNotFound
 import com.google.rpc.BadRequest

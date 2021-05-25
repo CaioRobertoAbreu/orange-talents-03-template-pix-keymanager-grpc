@@ -1,4 +1,4 @@
-package br.com.zup.academy.caio.chavepix
+package br.com.zup.academy.caio.chavepix.deleta
 
 import br.com.zup.academy.caio.ExclusaoChaveRequest
 import io.micronaut.core.annotation.Introspected

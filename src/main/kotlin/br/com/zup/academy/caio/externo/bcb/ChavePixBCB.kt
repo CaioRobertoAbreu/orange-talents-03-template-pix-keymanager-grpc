@@ -1,11 +1,12 @@
-package br.com.zup.academy.caio.chavepix
+package br.com.zup.academy.caio.externo.bcb
 
 import br.com.zup.academy.caio.TipoChave
+import br.com.zup.academy.caio.chavepix.cria.ChavePix
 import br.com.zup.academy.caio.externo.bcb.*
-import br.com.zup.academy.caio.externo.bcb.ChavePixBCBExterno
+import br.com.zup.academy.caio.externo.bcb.cria.*
+import br.com.zup.academy.caio.externo.bcb.delete.DeletePixKeyRequest
 import io.micronaut.http.HttpStatus
 import org.slf4j.LoggerFactory
-import java.util.logging.Logger
 import javax.inject.Singleton
 
 @Singleton

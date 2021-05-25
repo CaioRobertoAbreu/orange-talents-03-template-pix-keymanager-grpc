@@ -1,6 +1,8 @@
-package br.com.zup.academy.caio.chavepix
+package br.com.zup.academy.caio.chavepix.deleta
 
+import br.com.zup.academy.caio.chavepix.ChavePixRepository
 import br.com.zup.academy.caio.exceptions.ChavePixNotFound
+import br.com.zup.academy.caio.externo.bcb.ChavePixBCB
 import io.micronaut.validation.Validated
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -13,7 +15,7 @@ import javax.validation.Valid
 class DeletaChavePixService {
 
     @Inject
-    private lateinit var chavePixBCB: br.com.zup.academy.caio.chavepix.ChavePixBCB
+    private lateinit var chavePixBCB: ChavePixBCB
     @Inject
     private lateinit var chavePixRepository: ChavePixRepository
     private val logger = LoggerFactory.getLogger(this::class.java)

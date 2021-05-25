@@ -4,16 +4,21 @@ import br.com.zup.academy.caio.ExcluiChaveServiceGrpc
 import br.com.zup.academy.caio.ExclusaoChaveRequest
 import br.com.zup.academy.caio.TipoChave
 import br.com.zup.academy.caio.TipoConta
+import br.com.zup.academy.caio.externo.bcb.ChavePixBCBExterno
+import br.com.zup.academy.caio.externo.bcb.DeletePixKeyRequest
 import io.grpc.ManagedChannel
 import io.grpc.Status
 import io.grpc.StatusRuntimeException
 import io.micronaut.context.annotation.Factory
 import io.micronaut.grpc.annotation.GrpcChannel
-import io.micronaut.grpc.annotation.GrpcService
 import io.micronaut.grpc.server.GrpcServerChannel
+import io.micronaut.http.HttpResponse
+import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
+import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,6 +28,9 @@ internal class ExcluirChaveControllerTest(
     @Inject val client: ExcluiChaveServiceGrpc.ExcluiChaveServiceBlockingStub){
 
     private lateinit var pix: ChavePix
+
+    @Inject
+    private lateinit var externoBCB: ChavePixBCBExterno
 
     @BeforeEach
     fun setup(){
@@ -43,6 +51,11 @@ internal class ExcluirChaveControllerTest(
             .setClienteId(pix.clienteId)
             .setPixId(pix.pixId)
             .build()
+
+        val detelePixKeyRequest = DeletePixKeyRequest(pix.valor, "60701190")
+        `when`(externoBCB.deletarChave(pix.valor, detelePixKeyRequest))
+            .thenReturn(HttpResponse.ok())
+
         //Acao
         client.excluirChave(request)
 
@@ -65,7 +78,7 @@ internal class ExcluirChaveControllerTest(
 
         //Verificacao
         assertEquals(Status.NOT_FOUND.code, error.status.code)
-        assertEquals("Chave não encontrada ou não pertencente ao cliente", error.status.description)
+        assertEquals("Chave nao encontrada ou nao pertencente ao cliente", error.status.description)
         assertFalse(repository.findAll().isEmpty())
     }
 
@@ -84,8 +97,38 @@ internal class ExcluirChaveControllerTest(
 
         //Verificacao
         assertEquals(Status.NOT_FOUND.code, error.status.code)
-        assertEquals("Chave não encontrada ou não pertencente ao cliente", error.status.description)
+        assertEquals("Chave nao encontrada ou nao pertencente ao cliente", error.status.description)
         assertFalse(repository.findAll().isEmpty())
+    }
+
+    @Test
+    fun `deve retornar excecao para chave nao encontrada pelo bacen`(){
+        //Cenario
+        val request = ExclusaoChaveRequest.newBuilder()
+            .setClienteId(pix.clienteId)
+            .setPixId(pix.pixId)
+            .build()
+
+        val deletePixKeyRequest = DeletePixKeyRequest(pix.valor, "60701190")
+        `when`(externoBCB.deletarChave(pix.valor, deletePixKeyRequest))
+            .thenReturn(HttpResponse.notFound())
+
+        //Acao
+        val error = assertThrows<StatusRuntimeException> {
+            client.excluirChave(request)
+        }
+
+        //Verificacao
+        with(error){
+            assertEquals(Status.FAILED_PRECONDITION.code, error.status.code)
+            assertEquals("Chave nao encontrada ou nao pertencente ao cliente", error.status.description)
+            assertFalse(repository.findAll().isEmpty())
+        }
+    }
+
+    @MockBean(ChavePixBCBExterno::class)
+    fun mockChavePixBCBExterno(): ChavePixBCBExterno? {
+        return Mockito.mock(ChavePixBCBExterno::class.java)
     }
 }
 

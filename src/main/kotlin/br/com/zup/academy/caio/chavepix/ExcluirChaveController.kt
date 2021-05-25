@@ -11,7 +11,7 @@ import javax.inject.Singleton
 @Singleton
 @ErrorHandler
 class ExcluirChaveController(
-    @Inject val service: ChavePixService
+    @Inject val service: DeletaChavePixService
 ): ExcluiChaveServiceGrpc.ExcluiChaveServiceImplBase() {
 
     override fun excluirChave(request: ExclusaoChaveRequest,

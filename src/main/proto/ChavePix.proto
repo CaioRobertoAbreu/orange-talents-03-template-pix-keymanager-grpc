@@ -38,7 +38,7 @@ message CadastraChaveRequest{
 }
 
 message CadastraChaveResponse{
-  string cliente_id = 1;
+  string clienteId = 1;
   string pixId = 2;
 }
 

@@ -61,6 +61,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.7.2")
+
+    //Jackson XML
+    implementation("io.micronaut.xml:micronaut-jackson-xml")
 }
 
 

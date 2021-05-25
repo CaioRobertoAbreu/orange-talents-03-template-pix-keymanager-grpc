@@ -3,11 +3,10 @@ package br.com.zup.academy.caio.chavepix
 import br.com.zup.academy.caio.CriaChaveServiceGrpc
 import br.com.zup.academy.caio.TipoChave
 import br.com.zup.academy.caio.TipoConta
-import br.com.zup.academy.caio.chavepix.ChavePixRepository
-import br.com.zup.academy.caio.chavepix.CriaRequestBuilder
-import br.com.zup.academy.caio.externo.ConsultaCorrentistaClient
-import br.com.zup.academy.caio.externo.ConsultaCorrentistaResponse
-import br.com.zup.academy.caio.externo.Titular
+import br.com.zup.academy.caio.externo.bcb.*
+import br.com.zup.academy.caio.externo.erp_itau.ConsultaCorrentistaClient
+import br.com.zup.academy.caio.externo.erp_itau.ConsultaCorrentistaResponse
+import br.com.zup.academy.caio.externo.erp_itau.Titular
 import com.google.rpc.BadRequest
 import io.grpc.ManagedChannel
 import io.grpc.Status
@@ -16,17 +15,21 @@ import io.grpc.protobuf.StatusProto
 import io.micronaut.context.annotation.Factory
 import io.micronaut.grpc.annotation.GrpcChannel
 import io.micronaut.grpc.server.GrpcServerChannel
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpResponseFactory
+import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
+import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,7 +39,9 @@ class CriaChaveControllerTest(
     val repository: ChavePixRepository){
 
     @Inject
-    lateinit var externo: ConsultaCorrentistaClient
+    lateinit var externoItau: ConsultaCorrentistaClient
+    @Inject
+    lateinit var externoBCB: ChavePixBCBExterno
 
     @BeforeEach
     fun setup() {
@@ -49,11 +54,22 @@ class CriaChaveControllerTest(
         val request = CriaRequestBuilder().comValoresPadrao().now()
 
         val response = ConsultaCorrentistaResponse(
-            tipo = "CONTA_POUPANCA", agencia = "0001", numero ="291900",
-            titular = Titular("5260263c-a3c1-4727-ae32-3bdb2538841b", "Maraja dos Legados", "12345678910"))
+            tipo = "CONTA_CORRENTE", agencia = "0001", numero ="291900",
+            titular = Titular("5260263c-a3c1-4727-ae32-3bdb2538841b", "Maraja dos Legados", "12345678910")
+        )
 
-        `when`(externo.consultaCliente(request.codigoInterno, request.tipoConta.toString()))
-            .thenReturn(response)
+        `when`(externoItau.consultaCliente(request.codigoInterno, request.tipoConta.toString()))
+            .thenReturn(HttpResponse.ok(response))
+
+        val pixKeyReqeust = CreatePixKeyRequest(request.tipoChave.name, request.valor,
+        BankAccount("60701190", response.agencia, response.numero, AccountType.converte(response.tipo)),
+        Owner(OwnerType.NATURAL_PERSON.name, response.nome, response.cpf))
+
+        val responseCriaChaveBCB = ResponseCriaChaveBCB(request.tipoChave.name, request.valor,
+        pixKeyReqeust.bankAccount, pixKeyReqeust.owner, LocalDateTime.now())
+
+        `when`(externoBCB.criarChave(pixKeyReqeust))
+            .thenReturn(HttpResponse.created(responseCriaChaveBCB))
 
         //Acao
         val chaveRegistrada = client.registrarChave(request)
@@ -73,7 +89,7 @@ class CriaChaveControllerTest(
             .alterarConta(TipoConta.CONTA_POUPANCA_VALUE).now()
 
         //Acao
-        `when`(externo.consultaCliente(request.codigoInterno, request.tipoConta.toString()))
+        `when`(externoItau.consultaCliente(request.codigoInterno, request.tipoConta.toString()))
             .thenReturn(null)
 
         val error = org.junit.jupiter.api.assertThrows<StatusRuntimeException> {
@@ -95,7 +111,7 @@ class CriaChaveControllerTest(
             .alterarConta(TipoConta.CONTA_POUPANCA_VALUE).now()
 
         //Acao
-        `when`(externo.consultaCliente(request.codigoInterno, request.tipoConta.toString()))
+        `when`(externoItau.consultaCliente(request.codigoInterno, request.tipoConta.toString()))
             .thenThrow(HttpClientResponseException::class.java)
 
         val error = org.junit.jupiter.api.assertThrows<StatusRuntimeException> {
@@ -133,7 +149,7 @@ class CriaChaveControllerTest(
                     Pair(violacao.field, violacao.description)
                 }
 
-            assertTrue(details.contains(Pair("novaChavePix", "Valor da chave inválido")))
+            assertTrue(details.contains(Pair("novaChavePix", "Valor da chave invalido")))
             assertTrue(details.contains(Pair("codigoInterno", "must not be blank")))
         }
     }
@@ -226,11 +242,24 @@ class CriaChaveControllerTest(
             .now()
 
         val response = ConsultaCorrentistaResponse(
-            tipo = "CONTA_POUPANCA", agencia = "0001", numero ="291900",
-            titular = Titular("5260263c-a3c1-4727-ae32-3bdb2538841b", "Maraja dos Legados", "12345678910"))
+            tipo = "CONTA_CORRENTE", agencia = "0001", numero ="291900",
+            titular = Titular("5260263c-a3c1-4727-ae32-3bdb2538841b", "Maraja dos Legados", "12345678910")
+        )
 
-        `when`(externo.consultaCliente(request.codigoInterno, request.tipoConta.toString()))
-            .thenReturn(response)
+        `when`(externoItau.consultaCliente(request.codigoInterno, request.tipoConta.toString()))
+            .thenReturn(HttpResponse.ok(response))
+
+        val createPixRequest = CreatePixKeyRequest(request.tipoChave.name, request.valor,
+            BankAccount("60701190", response.agencia, response.numero, AccountType.CACC.name,),
+            Owner(OwnerType.NATURAL_PERSON.name, response.nome, response.cpf)
+        )
+
+        val responseCriaChaveBCB = ResponseCriaChaveBCB(request.tipoChave.name, request.valor,
+        createPixRequest.bankAccount, createPixRequest.owner, LocalDateTime.now())
+
+        `when`(externoBCB.criarChave(createPixRequest))
+            .thenReturn(HttpResponse.created(responseCriaChaveBCB))
+
         client.registrarChave(request)
 
         //Acao
@@ -245,13 +274,51 @@ class CriaChaveControllerTest(
         }
     }
 
+    @Test
+    fun `deve retornar excecao quando encontrar erro ao cadastrar a mesma no bacen`(){
+        //Cenario
+        val request = CriaRequestBuilder().comValoresPadrao().now()
+
+        val response = ConsultaCorrentistaResponse(
+            tipo = "CONTA_CORRENTE", agencia = "0001", numero ="291900",
+            titular = Titular("5260263c-a3c1-4727-ae32-3bdb2538841b", "Maraja dos Legados", "12345678910")
+        )
+
+        `when`(externoItau.consultaCliente(request.codigoInterno, request.tipoConta.toString()))
+            .thenReturn(HttpResponse.ok(response))
+
+        val pixKeyReqeust = CreatePixKeyRequest(request.tipoChave.name, request.valor,
+            BankAccount("60701190", response.agencia, response.numero, AccountType.converte(response.tipo)),
+            Owner(OwnerType.NATURAL_PERSON.name, response.nome, response.cpf))
+
+        `when`(externoBCB.criarChave(pixKeyReqeust))
+            .thenReturn(HttpResponse.status(HttpStatus.UNPROCESSABLE_ENTITY))
+
+        //Acao
+        val error = assertThrows<StatusRuntimeException> {
+            client.registrarChave(request)
+        }
+
+        //Verificação
+        with(error) {
+            assertEquals(Status.FAILED_PRECONDITION.code, this.status.code)
+            assertEquals("Erro ao cadastrar chave no Bacen", this.status.description)
+            assertFalse(repository.existsByValor(request.valor))
+        }
+    }
+
     @MockBean(ConsultaCorrentistaClient::class)
-    fun mockConsultaClientExterno(): ConsultaCorrentistaClient? {
+    fun mockConsultaClientExternoItau(): ConsultaCorrentistaClient? {
         return Mockito.mock(ConsultaCorrentistaClient::class.java)
     }
+
+    @MockBean(ChavePixBCBExterno::class)
+    fun mockChavePixBCBExterno(): ChavePixBCBExterno? {
+        return Mockito.mock(ChavePixBCBExterno::class.java)
+    }
+
+
 }
-
-
 
 @Factory
 class criaChaveClient{
@@ -262,4 +329,5 @@ class criaChaveClient{
         return CriaChaveServiceGrpc.newBlockingStub(channel)
     }
 }
+
 

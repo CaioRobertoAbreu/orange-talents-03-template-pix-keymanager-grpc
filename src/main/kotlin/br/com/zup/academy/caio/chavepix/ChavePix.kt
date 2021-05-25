@@ -32,5 +32,8 @@ class ChavePix(
         pixId = UUID.randomUUID().toString()
     }
 
+    fun atualiza(key: String){
+        this.valor = key
+    }
 
 }

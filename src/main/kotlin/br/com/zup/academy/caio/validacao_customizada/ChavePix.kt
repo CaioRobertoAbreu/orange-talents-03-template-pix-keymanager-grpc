@@ -15,7 +15,7 @@ import kotlin.annotation.AnnotationTarget.*
 @Retention(RUNTIME)
 @Constraint(validatedBy = [ChavePixValidator::class])
 annotation class ChavePix(
-    val message:String = "Valor da chave inválido"
+    val message:String = "Valor da chave invalido"
 ) {
 }
 
@@ -31,7 +31,7 @@ class ChavePixValidator: ConstraintValidator<ChavePix, NovaChavePix>{
 
             TipoChave.CPF -> return value.valor.isNotBlank() && value.valor.matches("^[0-9]{11}$".toRegex())
 
-            TipoChave.CELULAR -> return value.valor.isNotBlank() && value.valor.matches("\\+[1-9]2\\d{1,14}$".toRegex())
+            TipoChave.CELULAR -> return value.valor.isNotBlank() && value.valor.matches("\\+[1-9]\\d{1,14}$".toRegex())
 
             TipoChave.EMAIL -> return value.valor.isNotBlank() &&
                     value.valor.matches("^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$".toRegex())

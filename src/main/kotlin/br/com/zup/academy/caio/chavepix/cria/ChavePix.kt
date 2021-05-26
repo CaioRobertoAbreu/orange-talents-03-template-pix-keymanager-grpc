@@ -2,6 +2,7 @@ package br.com.zup.academy.caio.chavepix.cria
 
 import br.com.zup.academy.caio.TipoChave
 import br.com.zup.academy.caio.TipoConta
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.Entity
 import javax.persistence.EnumType
@@ -20,19 +21,22 @@ class ChavePix(
     val nome: String,
     val cpf: String,
     val clienteId: String,
+    var criadoEm: LocalDateTime? = null
 ) {
     @Id
     var pixId: String? = null
 
+
     init {
-        if (tipoChave == TipoChave.CHAVE_ALEATORIA && valor.isNullOrBlank()){
+        if (tipoChave == TipoChave.CHAVE_ALEATORIA && valor == null){
             valor = UUID.randomUUID().toString()
         }
         pixId = UUID.randomUUID().toString()
     }
 
-    fun atualiza(key: String){
+    fun atualiza(key: String, criadoEm: LocalDateTime){
         this.valor = key
+        this.criadoEm = criadoEm
     }
 
 }

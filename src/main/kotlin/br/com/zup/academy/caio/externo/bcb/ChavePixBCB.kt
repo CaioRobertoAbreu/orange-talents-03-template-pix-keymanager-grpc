@@ -29,7 +29,7 @@ class ChavePixBCB(val clientBCBExterno: ChavePixBCBExterno) {
             this.body.get()
         }
 
-        chave.atualiza(response.key)
+        chave.atualiza(response.key, response.createdAt)
 
         return chave
     }

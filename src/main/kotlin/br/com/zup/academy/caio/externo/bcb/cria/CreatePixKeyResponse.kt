@@ -9,4 +9,5 @@ data class CreatePixKeyResponse(
     val owner: Owner,
     val createdAt: LocalDateTime
 ) {
+
 }

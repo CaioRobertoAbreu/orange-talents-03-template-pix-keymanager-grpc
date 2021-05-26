@@ -16,6 +16,11 @@ service ExcluiChaveService {
   rpc excluirChave(ExclusaoChaveRequest) returns (ExclusaoChaveResponse) {}
 }
 
+service ConsultaChaveService {
+
+  rpc consultarChave(ConsultaChaveRequest) returns (ConsultaChaveResponse) {}
+}
+
 enum TipoChave{
   CHAVE_DESCONHECIDA = 0;
   CPF = 1;
@@ -51,4 +56,24 @@ message ExclusaoChaveResponse{
   string response = 1;
 }
 
+message ConsultaChaveRequest{
 
+  string clienteId = 1;
+  string pixId = 2;
+  string chavePix = 3;
+
+}
+
+message ConsultaChaveResponse{
+  string pixId = 1;
+  string clienteId = 2;
+  string tipoChave = 3;
+  string valor = 4;
+  string nome = 5;
+  string cpf = 6;
+  string instituicaoFinanceira = 7;
+  string agencia = 8;
+  string numero = 9;
+  string tipoConta = 10;
+  string criadoEm = 11;
+}

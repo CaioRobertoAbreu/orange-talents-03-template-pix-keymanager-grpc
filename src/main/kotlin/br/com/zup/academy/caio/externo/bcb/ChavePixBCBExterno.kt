@@ -1,5 +1,6 @@
 package br.com.zup.academy.caio.externo.bcb
 
+import br.com.zup.academy.caio.externo.bcb.consulta.PixKeyDetailsResponse
 import br.com.zup.academy.caio.externo.bcb.cria.CreatePixKeyRequest
 import br.com.zup.academy.caio.externo.bcb.cria.CreatePixKeyResponse
 import br.com.zup.academy.caio.externo.bcb.delete.DeletePixKeyRequest
@@ -21,5 +22,10 @@ interface ChavePixBCBExterno {
     @Produces(MediaType.APPLICATION_XML)
     @Consumes(MediaType.APPLICATION_XML)
     fun deletarChave(@PathVariable key: String, @Body DeletePixKeyRequest: DeletePixKeyRequest): HttpResponse<DeletePixKeyResponse>
+
+    @Get("/{key}")
+    @Produces(MediaType.APPLICATION_XML)
+    @Consumes(MediaType.APPLICATION_XML)
+    fun consultarChave(@PathVariable key: String): HttpResponse<PixKeyDetailsResponse>
 }
 

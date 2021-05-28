@@ -23,6 +23,7 @@ class DeletaChavePixService {
     @Transactional
     fun excluirChave(@Valid chave: ExcluirChave) {
 
+
         val chaveEncontrada = chavePixRepository
             .findByPixIdAndClienteId(chave.pixId, chave.clienteId)
             .orElseThrow { ChavePixNotFound("Chave nao encontrada ou nao pertencente ao cliente") }

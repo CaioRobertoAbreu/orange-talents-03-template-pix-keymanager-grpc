@@ -16,30 +16,27 @@ class PixKeyDetailsResponse(
 
 ) {
 
-    fun toChavePix(): ChavePix {
+    companion object converte {
 
-       return ChavePix(converteToTipoChave(), this.key, convertoToTipoConta(), bankAccount.branch,
-        bankAccount.accountNumber, owner.name, owner.taxIdNumber, "", this.createdAt).also {
-            it.pixId = ""
+        fun toTipoChave(chave: String): String{
+            return when(chave){
+                "cpf".toUpperCase() -> return TipoChave.CPF.name
+                "phone".toUpperCase() -> return TipoChave.CELULAR.name
+                "email".toUpperCase() -> return TipoChave.EMAIL.name
+                "random".toUpperCase() -> return TipoChave.CHAVE_ALEATORIA.name
+                else -> TipoChave.CHAVE_DESCONHECIDA.name
+            }
+        }
+
+        fun toTipoConta(type: String): String{
+            return when(type){
+                "cacc".toUpperCase() -> return TipoConta.CONTA_CORRENTE.name
+                "svgs ".toUpperCase() -> return TipoConta.CONTA_POUPANCA.name
+                else -> TipoConta.CONTA_DESCONHECIDA.name
+            }
         }
 
     }
 
-    private fun converteToTipoChave(): TipoChave{
-        return when(keyType){
-            "cpf".toUpperCase() -> return TipoChave.CPF
-            "phone".toUpperCase() -> return TipoChave.CELULAR
-            "email".toUpperCase() -> return TipoChave.EMAIL
-            "random".toUpperCase() -> return TipoChave.CHAVE_ALEATORIA
-            else -> TipoChave.CHAVE_DESCONHECIDA
-        }
-    }
 
-    private fun convertoToTipoConta(): TipoConta{
-        return when(bankAccount.accountType){
-            "cacc".toUpperCase() -> return TipoConta.CONTA_CORRENTE
-            "svgs ".toUpperCase() -> return TipoConta.CONTA_POUPANCA
-            else -> TipoConta.CONTA_DESCONHECIDA
-        }
-    }
 }

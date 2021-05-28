@@ -21,6 +21,11 @@ service ConsultaChaveService {
   rpc consultarChave(ConsultaChaveRequest) returns (ConsultaChaveResponse) {}
 }
 
+service ConsultaTodasChaves {
+
+  rpc listarTodas(ListaChavesRequest) returns (ListaChavesResponse) {}
+}
+
 enum TipoChave{
   CHAVE_DESCONHECIDA = 0;
   CPF = 1;
@@ -58,9 +63,15 @@ message ExclusaoChaveResponse{
 
 message ConsultaChaveRequest{
 
-  string clienteId = 1;
-  string pixId = 2;
-  string chavePix = 3;
+  message ClienteId{
+    string clienteId = 1;
+    string pixId = 2;
+  }
+
+  oneof Filtro{
+    ClienteId clienteId = 1;
+    string chave = 2;
+  }
 
 }
 
@@ -77,3 +88,22 @@ message ConsultaChaveResponse{
   string tipoConta = 10;
   string criadoEm = 11;
 }
+
+message ListaChavesRequest{
+  string clienteId = 1;
+}
+
+message ListaChavesResponse{
+
+  message Chave{
+    string pixId = 1;
+    string clienteId = 2;
+    string tipoChave = 3;
+    string valor = 4;
+    string tipoConta = 5;
+    string criadoEm = 6;
+  }
+
+  repeated Chave chaves = 1;
+}
+

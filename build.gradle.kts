@@ -14,6 +14,10 @@ noArg {
     annotation("javax.persistence.Entity")
 }
 
+allOpen {
+    annotation("io.micronaut.validation.Validated")
+}
+
 version = "0.1"
 group = "br.com.zup.academy.caio"
 

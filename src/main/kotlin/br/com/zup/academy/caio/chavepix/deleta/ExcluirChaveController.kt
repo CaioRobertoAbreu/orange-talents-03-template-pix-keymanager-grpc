@@ -10,9 +10,7 @@ import javax.inject.Singleton
 
 @Singleton
 @ErrorHandler
-class ExcluirChaveController(
-    @Inject val service: DeletaChavePixService
-): ExcluiChaveServiceGrpc.ExcluiChaveServiceImplBase() {
+class ExcluirChaveController(@Inject val service: DeletaChavePixService): ExcluiChaveServiceGrpc.ExcluiChaveServiceImplBase() {
 
     override fun excluirChave(request: ExclusaoChaveRequest,
         responseObserver: StreamObserver<ExclusaoChaveResponse>?) {

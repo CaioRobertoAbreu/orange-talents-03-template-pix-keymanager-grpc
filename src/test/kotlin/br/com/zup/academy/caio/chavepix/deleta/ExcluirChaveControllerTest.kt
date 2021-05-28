@@ -1,4 +1,4 @@
-package br.com.zup.academy.caio.chavepix.cria
+package br.com.zup.academy.caio.chavepix.deleta
 
 import br.com.zup.academy.caio.ExcluiChaveServiceGrpc
 import br.com.zup.academy.caio.ExclusaoChaveRequest
@@ -62,8 +62,8 @@ internal class ExcluirChaveControllerTest(
         client.excluirChave(request)
 
         //Verificacao
+        val abobrinha = repository.findAll()
         assertTrue(repository.findAll().isEmpty())
-
     }
 
     @Test

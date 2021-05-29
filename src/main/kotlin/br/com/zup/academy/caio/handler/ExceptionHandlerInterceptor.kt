@@ -35,7 +35,7 @@ class ExceptionHandlerInterceptor: MethodInterceptor<CriaChaveController, Any?> 
 
             val error = when (e) {
                 is IllegalArgumentException -> Status.INVALID_ARGUMENT.withDescription(e.message).asRuntimeException()
-                is HttpClientResponseException -> Status.INVALID_ARGUMENT.withDescription("Dados inválidos").asRuntimeException()
+                is HttpClientResponseException -> Status.INVALID_ARGUMENT.withDescription("Dados invalidos").asRuntimeException()
                 is IllegalStateException -> Status.FAILED_PRECONDITION.withDescription(e.message).asRuntimeException()
                 is ChavePixAlreadyExists -> Status.ALREADY_EXISTS.withDescription(e.message).asRuntimeException()
                 is ConstraintViolationException -> constraintViolationException(e)
@@ -66,7 +66,7 @@ class ExceptionHandlerInterceptor: MethodInterceptor<CriaChaveController, Any?> 
 
         val statusProto = com.google.rpc.Status.newBuilder()
             .setCode(Code.INVALID_ARGUMENT_VALUE)
-            .setMessage("Parâmetros inválidos")
+            .setMessage("Parametros invalidos")
             .addDetails(com.google.protobuf.Any.pack(details))
             .build()
 

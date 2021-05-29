@@ -36,8 +36,7 @@ import javax.inject.Singleton
 @MicronautTest(transactional = false)
 class CriaChaveControllerTest(
     @Inject val client: CriaChaveServiceGrpc.CriaChaveServiceBlockingStub,
-    val repository: ChavePixRepository
-){
+    val repository: ChavePixRepository){
 
     @Inject
     lateinit var externoItau: ConsultaCorrentistaExterno
@@ -94,7 +93,7 @@ class CriaChaveControllerTest(
         `when`(externoItau.consultaCliente(request.codigoInterno, request.tipoConta.toString()))
             .thenReturn(null)
 
-        val error = org.junit.jupiter.api.assertThrows<StatusRuntimeException> {
+        val error = assertThrows<StatusRuntimeException> {
             client.registrarChave(request)
         }
 
@@ -116,14 +115,14 @@ class CriaChaveControllerTest(
         `when`(externoItau.consultaCliente(request.codigoInterno, request.tipoConta.toString()))
             .thenThrow(HttpClientResponseException::class.java)
 
-        val error = org.junit.jupiter.api.assertThrows<StatusRuntimeException> {
+        val error = assertThrows<StatusRuntimeException> {
             client.registrarChave(request)
         }
 
         //Verificacao
         with(error) {
             assertEquals(Status.INVALID_ARGUMENT.code, this.status.code)
-            assertEquals("Dados inválidos", this.status.description)
+            assertEquals("Dados invalidos", this.status.description)
         }
     }
 
@@ -135,14 +134,14 @@ class CriaChaveControllerTest(
             .now()
 
         //Acao
-        val error = org.junit.jupiter.api.assertThrows<StatusRuntimeException> {
+        val error = assertThrows<StatusRuntimeException> {
             client.registrarChave(request)
         }
 
         //Verificacao
         with(error){
             assertEquals(Status.INVALID_ARGUMENT.code, this.status.code)
-            assertEquals("Parâmetros inválidos", this.status.description)
+            assertEquals("Parametros invalidos", this.status.description)
 
             val details = StatusProto.fromThrowable(this)?.detailsList
                 ?.get(0)!!
@@ -151,8 +150,10 @@ class CriaChaveControllerTest(
                     Pair(violacao.field, violacao.description)
                 }
 
-            assertTrue(details.contains(Pair("novaChavePix", "Valor da chave invalido")))
-            assertTrue(details.contains(Pair("codigoInterno", "must not be blank")))
+            println(details)
+            assertTrue(details.contains(Pair("codigoInterno", "não deve estar em branco")))
+            assertTrue(details.contains(Pair("tipoChave", "não deve ser nulo")))
+            assertTrue(details.contains(Pair("tipoConta", "não deve ser nulo")))
         }
     }
 
@@ -160,7 +161,8 @@ class CriaChaveControllerTest(
     fun `deve retornar excecao com chave tipo cpf incorreta`(){
         //Cenario
         val request = CriaRequestBuilder()
-            .comTipoDeChave(0)
+            .comValoresPadrao()
+            .comTipoDeChave(1)
             .comValorChave("123456789")
             .now()
 
@@ -172,7 +174,7 @@ class CriaChaveControllerTest(
         //Verificacao
         with(error){
             assertEquals(Status.INVALID_ARGUMENT.code, this.status.code)
-            assertEquals("Parâmetros inválidos", this.status.description)
+            assertEquals("Parametros invalidos", this.status.description)
         }
     }
 
@@ -192,7 +194,7 @@ class CriaChaveControllerTest(
         //Verificacao
         with(error){
             assertEquals(Status.INVALID_ARGUMENT.code, this.status.code)
-            assertEquals("Parâmetros inválidos", this.status.description)
+            assertEquals("Parametros invalidos", this.status.description)
         }
     }
 
@@ -200,7 +202,8 @@ class CriaChaveControllerTest(
     fun `deve retornar excecao com chave tipo email incorreta`(){
         //Cenario
         val request = CriaRequestBuilder()
-            .comTipoDeChave(2)
+            .comValoresPadrao()
+            .comTipoDeChave(3)
             .comValorChave("email.invalido")
             .now()
 
@@ -212,7 +215,7 @@ class CriaChaveControllerTest(
         //Verificacao
         with(error){
             assertEquals(Status.INVALID_ARGUMENT.code, this.status.code)
-            assertEquals("Parâmetros inválidos", this.status.description)
+            assertEquals("Parametros invalidos", this.status.description)
         }
     }
 
@@ -232,7 +235,7 @@ class CriaChaveControllerTest(
         //Verificacao
         with(error){
             assertEquals(Status.INVALID_ARGUMENT.code, this.status.code)
-            assertEquals("Parâmetros inválidos", this.status.description)
+            assertEquals("Parametros invalidos", this.status.description)
         }
     }
 
@@ -272,7 +275,7 @@ class CriaChaveControllerTest(
         //Verificacao
         with(error){
             assertEquals(Status.ALREADY_EXISTS.code, this.status.code)
-            assertEquals("Chave já cadastrada", this.status.description)
+            assertEquals("Chave ja cadastrada", this.status.description)
         }
     }
 

@@ -16,7 +16,7 @@ sealed class Filtro {
     abstract fun filtra(repository: ChavePixRepository, clientBCB: ChavePixBCBExterno): ConsultaChave
 
     @Introspected
-    data class clienteId(@field:NotBlank @Size(max = 77) val pixId: String, @field:NotBlank val clienteId: String) : Filtro() {
+    data class ClienteId(@field:NotBlank @Size(max = 77) val pixId: String, @field:NotBlank val clienteId: String) : Filtro() {
 
         override fun filtra(repository: ChavePixRepository, clientBCB: ChavePixBCBExterno): ConsultaChave {
 
@@ -37,7 +37,7 @@ sealed class Filtro {
     }
 
     @Introspected
-    data class chave(@field:NotBlank val chave: String) : Filtro() {
+    data class Chave(@field:NotBlank val chave: String) : Filtro() {
 
         override fun filtra(repository: ChavePixRepository, clientBCB: ChavePixBCBExterno): ConsultaChave {
 

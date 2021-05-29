@@ -27,7 +27,7 @@ class CriaChavePixService() {
     fun registra(@Valid novaChavePix: NovaChavePix): ChavePix {
 
         if (chavePixRepository.existsByValor(novaChavePix.valor)) {
-            throw ChavePixAlreadyExists("Chave já cadastrada")
+            throw ChavePixAlreadyExists("Chave ja cadastrada")
         }
 
         logger.info("Consultando chave ERP")

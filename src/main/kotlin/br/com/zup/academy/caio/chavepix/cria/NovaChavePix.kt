@@ -7,6 +7,9 @@ import br.com.zup.academy.caio.externo.bcb.cria.CreatePixKeyResponse
 import br.com.zup.academy.caio.externo.erp_itau.ConsultaCorrentistaResponse
 import br.com.zup.academy.caio.validacao_customizada.ChavePix
 import io.micronaut.core.annotation.Introspected
+import javax.validation.ConstraintViolationException
+import javax.validation.Valid
+import javax.validation.Validator
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
@@ -44,4 +47,5 @@ fun CadastraChaveRequest.toNovaChavePix(): NovaChavePix {
         tipoConta = when(this.tipoConta){
             TipoConta.CONTA_DESCONHECIDA -> null
             else -> TipoConta.valueOf(this.tipoConta.name) })
+
 }

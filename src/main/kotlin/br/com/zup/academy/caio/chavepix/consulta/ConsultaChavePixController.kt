@@ -18,10 +18,10 @@ import javax.validation.ConstraintViolationException
 @Validated
 class ConsultaChavePixController(
     @Inject val repository: ChavePixRepository,
-    @Inject val clienteBCB: ChavePixBCBExterno) : ConsultaChaveServiceGrpc.ConsultaChaveServiceImplBase() {
+    @Inject val clienteBCB: ChavePixBCBExterno,
+    @Inject val validator: Validator) : ConsultaChaveServiceGrpc.ConsultaChaveServiceImplBase() {
 
-    @Inject
-    lateinit var validator: Validator
+
 
     override fun consultarChave(
         request: ConsultaChaveRequest,
@@ -29,10 +29,6 @@ class ConsultaChavePixController(
 
         val filtro = request.toModel(validator)
 
-        val violations = validator.validate(filtro)
-        if (violations.isNotEmpty()) {
-            throw ConstraintViolationException(violations)
-        }
         val response = filtro.filtra(repository, clienteBCB).run {
             return@run this.converteToResponse()
         }

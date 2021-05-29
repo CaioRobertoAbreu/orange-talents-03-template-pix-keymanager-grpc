@@ -38,22 +38,6 @@ internal class ConsultaChavePixControllerTest(
     @Inject val client: ConsultaChaveServiceGrpc.ConsultaChaveServiceBlockingStub
 ) {
 
-    /*
-    key manager:
-    1. Happy path - OK
-    2. Chave pix nao encontrada ou nao pertencente ao cliente - OK
-    3. Chave não encontrada no Bacen - OK
-
-    Outros serviços:
-    1. Happy path - OK
-    2. chave pix nao encontrada no bd e encontrada no bacen - OK
-    3. chave pix nao encontrada no bd e nao encontrada no bacen - OK
-    4. chave pix inválida
-
-    Filtro:
-    1. Filtro inválido - ok
-     */
-
     private lateinit var chaveSalva: ChavePix
 
     @Inject
@@ -173,6 +157,31 @@ internal class ConsultaChavePixControllerTest(
     }
 
     @Test
+    fun `deve retornar excecao para parametros invalido quando buscar por clienteId`(){
+        //Cenario
+        val clientId = ConsultaChaveRequest.ClienteId.newBuilder().build()
+
+        val request = ConsultaChaveRequest.newBuilder()
+            .setClienteId(clientId)
+            .build()
+
+
+        //Acao
+        val error = assertThrows<StatusRuntimeException> {
+            client.consultarChave(request)
+        }
+
+
+        //Verificacao
+        with(error) {
+            assertEquals(Status.INVALID_ARGUMENT.code, error.status.code)
+            assertEquals("Parametros invalidos", error.status.description)
+        }
+    }
+
+
+
+    @Test
     fun `deve retornar uma chave pix para busca por chave`() {
         //Cenario
         val request = ConsultaChaveRequest.newBuilder()
@@ -251,6 +260,28 @@ internal class ConsultaChavePixControllerTest(
             assertEquals("Filtro invalido", error.status.description)
         }
 
+    }
+
+    @Test
+    fun `deve retornar excecao para parametros invalido quando buscar por chave`(){
+        //Cenario
+
+        val request = ConsultaChaveRequest.newBuilder()
+            .setChave("")
+            .build()
+
+
+        //Acao
+        val error = assertThrows<StatusRuntimeException> {
+            client.consultarChave(request)
+        }
+
+
+        //Verificacao
+        with(error) {
+            assertEquals(Status.INVALID_ARGUMENT.code, error.status.code)
+            assertEquals("Parametros invalidos", error.status.description)
+        }
     }
 
     @MockBean(ChavePixBCBExterno::class)

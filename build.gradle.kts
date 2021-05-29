@@ -68,6 +68,9 @@ dependencies {
 
     //Jackson XML
     implementation("io.micronaut.xml:micronaut-jackson-xml")
+    //Validator
+    implementation("io.micronaut.beanvalidation:micronaut-hibernate-validator")
+
 }
 
 

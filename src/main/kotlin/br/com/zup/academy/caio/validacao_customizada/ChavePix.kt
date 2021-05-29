@@ -62,14 +62,19 @@ class ChavePixValidator : ConstraintValidator<ChavePix, NovaChavePix> {
                 }
             }
 
-            else -> return true
+            TipoChave.CHAVE_DESCONHECIDA -> {
+                addConstraint(context)
+                return false
+            }
+
+            else -> return false
         }
     }
 
     fun addConstraint(context: ConstraintValidatorContext) {
         context.disableDefaultConstraintViolation()
-        context.buildConstraintViolationWithTemplate("Valor da chave invalido")
-            .addPropertyNode("valor")
+        context.buildConstraintViolationWithTemplate("tipoChave invalido")
+            .addPropertyNode("tipoChave")
             .addConstraintViolation()
     }
 

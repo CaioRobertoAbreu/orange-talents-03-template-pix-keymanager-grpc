@@ -152,8 +152,7 @@ class CriaChaveControllerTest(
 
             println(details)
             assertTrue(details.contains(Pair("codigoInterno", "não deve estar em branco")))
-            assertTrue(details.contains(Pair("tipoChave", "não deve ser nulo")))
-            assertTrue(details.contains(Pair("tipoConta", "não deve ser nulo")))
+            assertTrue(details.contains(Pair("tipoChave", "tipoChave invalido")))
         }
     }
 

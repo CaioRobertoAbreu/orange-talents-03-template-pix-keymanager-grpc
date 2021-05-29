@@ -20,11 +20,11 @@ data class NovaChavePix(
     @field:NotBlank
     val codigoInterno: String,
     @field:NotNull
-    val tipoChave: TipoChave?,
+    val tipoChave: TipoChave,
     @field:Size(max = 77)
     val valor: String,
     @field:NotNull
-    val tipoConta: TipoConta?
+    val tipoConta: TipoConta
 ) {
 
     fun toChavePix(createPixKeyResponseBCB: CreatePixKeyResponse, cliente: ConsultaCorrentistaResponse): br.com.zup.academy.caio.chavepix.cria.ChavePix {
@@ -39,13 +39,13 @@ fun CadastraChaveRequest.toNovaChavePix(): NovaChavePix {
         codigoInterno = codigoInterno,
 
         tipoChave = when(this.tipoChave) {
-            TipoChave.CHAVE_DESCONHECIDA -> null
+            TipoChave.CHAVE_DESCONHECIDA -> TipoChave.CHAVE_DESCONHECIDA
             else -> TipoChave.valueOf(this.tipoChave.name)},
 
         valor =  this.valor,
 
         tipoConta = when(this.tipoConta){
-            TipoConta.CONTA_DESCONHECIDA -> null
+            TipoConta.CONTA_DESCONHECIDA -> TipoConta.CONTA_DESCONHECIDA
             else -> TipoConta.valueOf(this.tipoConta.name) })
 
 }
